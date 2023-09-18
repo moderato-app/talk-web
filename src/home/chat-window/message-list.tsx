@@ -161,7 +161,7 @@ export const MessageList: React.FC<MLProps> = ({chatProxy}) => {
                 )}
             </div>
             <div
-                 ref={scrollEndRef}
+                ref={scrollEndRef}
                 className="h-10 text-transparent bg-transparent select-none" data-pseudo-content="ninja"></div>
         </div>
     )
