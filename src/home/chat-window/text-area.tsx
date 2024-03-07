@@ -180,7 +180,7 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
                            if (chatProxy.option.llm.maxAttached > 0) {
                                chatProxy.option.llm.maxAttached = 0
                            } else {
-                               chatProxy.option.llm.maxAttached = 4
+                               chatProxy.option.llm.maxAttached = 2
                            }
                        }
                        }
