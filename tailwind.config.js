@@ -24,7 +24,8 @@ export default {
             },
             maxWidth: {
                 '11': '2.75rem',
-                '60': '20rem',
+                '40': '10rem',
+                '60': '15rem',
                 '80': '20rem',
                 '86': '22rem',
                 '96': '24rem',
@@ -38,7 +39,8 @@ export default {
             minWidth: {
                 '11': '2.75rem',
                 '12': '3rem',
-                '60': '20rem',
+                '40': '10rem',
+                '60': '15rem',
                 '80': '20rem',
                 '86': '22rem',
                 '96': '24rem',
