@@ -32,7 +32,6 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
 
         let ps: Prompt[]
         if (keywords.length === 0) {
-            // eslint-disable-next-line valtio/state-snapshot-rule
             ps = promptState.prompts
         } else {
             ps = promptState.prompts.filter(p => {
