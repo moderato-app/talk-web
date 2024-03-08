@@ -38,7 +38,7 @@ type ControlState = {
     isMouseLeftDown: boolean
     isMouseDragging: boolean
     isWindowsBlurred: boolean,
-    isTextPending: boolean,
+    textPendingState: "none" | "pending" | "done",
     player: Player
     recordingMimeType?: RecordingMimeType
     recorder: EnhancedRecorder<RecordingCtx>
@@ -52,7 +52,7 @@ export const controlState = proxy<ControlState>({
     isMouseLeftDown: false,
     isMouseDragging: false,
     isWindowsBlurred: false,
-    isTextPending: false,
+    textPendingState: "none",
     player: {
         autoPlay: true,
         isPlaying: false,

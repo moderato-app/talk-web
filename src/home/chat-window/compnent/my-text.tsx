@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from 'react'
+import React, {memo, useCallback, useEffect, useState} from 'react'
 import {cx, formatAgo} from "../../../util/util.tsx"
 import {Message} from "../../../data-structure/message.tsx"
 import {MySpin} from "./widget/icon.tsx"
@@ -26,10 +26,10 @@ import mifoot from "markdown-it-footnote"
 import './widget/highlightjs-plugins/copy-button-plugin.css'
 import {LanguageLabelPlugin} from "./widget/highlightjs-plugins/language-label-plugin.tsx";
 import {CopyButtonPlugin} from "./widget/highlightjs-plugins/copy-button-plugin.tsx";
-import {debounce, throttle} from "lodash";
 import {useSnapshot} from "valtio/react";
 import {appState} from "../../../state/app-state.ts";
 import {controlState} from "../../../state/control-state.ts";
+import {debounce, throttle} from "lodash";
 
 hljs.configure({
     ignoreUnescapedHTML: true,
@@ -37,11 +37,16 @@ hljs.configure({
 hljs.addPlugin(new LanguageLabelPlugin());
 hljs.addPlugin(new CopyButtonPlugin());
 
-const ha = throttle(debounce(() => hljs.highlightAll(), 1000, {
-    'trailing': true
-}), 1000);
+// debounce and throttle function only works as being singleton
+const haDebounce = debounce(hljs.highlightAll, 0.5, {
+    leading: true,
+    trailing: true
+})
 
-const haNow = () => hljs.highlightAll()
+const haThrottle = throttle(hljs.highlightAll, 0.5, {
+    leading: true,
+    trailing: true
+})
 
 interface TextProps {
     messageSnap: Message
@@ -54,16 +59,19 @@ export const MyText: React.FC<TextProps> = ({messageSnap, theme}) => {
     const {showMarkdown} = useSnapshot(appState.pref)
     const {isWindowsBlurred} = useSnapshot(controlState)
     const [text, setText] = useState(messageSnap.text)
+    const [latestText, setLatestText] = useState<string | undefined>()
     const [hovering, setHovering] = useState(false)
 
-    // stop updating text when mouse hovering
+    const haNow = useCallback(() => showMarkdown && hljs.highlightAll(), [showMarkdown])
+
+    const haTh = useCallback(() => showMarkdown && haThrottle(), [showMarkdown])
+
+    const haDe = useCallback(() => showMarkdown && haDebounce(), [showMarkdown])
+
+    // run after text first loading
     useEffect(() => {
-        if (!hovering) {
-            controlState.isTextPending = false
-        } else {
-            controlState.isTextPending = messageSnap.status === "typing"
-        }
-    }, [messageSnap.status, hovering]);
+        haDe()
+    }, [haDe]);
 
     useEffect(() => {
         if (isWindowsBlurred) {
@@ -72,24 +80,44 @@ export const MyText: React.FC<TextProps> = ({messageSnap, theme}) => {
     }, [isWindowsBlurred]);
 
     useEffect(() => {
-        if (!controlState.isTextPending) {
-            setText(messageSnap.text)
-            ha()
-        }
-    }, [messageSnap]);
+        setLatestText(messageSnap.text)
+    }, [messageSnap.text]);
 
     useEffect(() => {
-        // apply highlight plugin immediately after message is fully received
-        if (messageSnap.status === 'received') {
-            haNow()
+        if (!hovering && latestText && latestText != text) {
+            // if user is moving the cursor away and there is text in the buffer
+            setText(latestText)
+            if (messageSnap.status == "typing") {
+                haTh()
+            } else {
+                // highlight after latestText is added to the UI
+                setTimeout(haNow)
+            }
         }
-    }, [messageSnap.status]);
+    }, [hovering, latestText, messageSnap.status, haNow, text, haTh]);
+
+    useEffect(() => {
+        hovering && messageSnap.status == "typing" && haNow()
+    }, [hovering, messageSnap.status, haNow])
+
+    useEffect(() => {
+        if (hovering) {
+            if (messageSnap.status === "typing") {
+                controlState.textPendingState = "pending"
+                return
+            } else if (latestText && latestText !== text) {
+                controlState.textPendingState = "done"
+                return;
+            }
+        }
+        controlState.textPendingState = "none"
+    }, [hovering, latestText, messageSnap.status, text]);
 
     return <div
         className={cx("flex flex-col rounded-2xl px-3 pt-1.5 pb-0.5",
             theme.text, theme.bg
         )}
-        onMouseEnter={() => setHovering(true)}
+        onMouseOver={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
     >
 
