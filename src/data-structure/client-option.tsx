@@ -254,3 +254,13 @@ const pickOne = <V extends string | number, T>(current: V | undefined, pool: T[]
     }
     return undefined
 }
+
+export const modelInUse = (llmOption: LLMOption): string | undefined => {
+    if (llmOption.gemini.enabled) {
+        return llmOption.gemini.model
+    } else if (llmOption.chatGPT.enabled) {
+        return llmOption.chatGPT.model
+    } else {
+        return undefined
+    }
+}

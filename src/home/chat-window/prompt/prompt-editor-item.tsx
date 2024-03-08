@@ -129,7 +129,7 @@ const Dot: React.FC<RoleDotProps> = ({messageProxy, targetRole}) => {
             bg,
         )}>
         {hovering &&
-            <div className=" bg-neutral-200/[0.8] rounded-full px-2 fixed -top-6 left-1/2 -translate-x-1/2
+            <div className="bg-neutral-200/[0.8] rounded-full px-2 fixed -top-6 left-1/2 -translate-x-1/2
             transform text-sm text-neutral-800">
                 {capitalize(targetRole)}
             </div>
