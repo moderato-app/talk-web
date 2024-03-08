@@ -8,6 +8,7 @@ import {bestModel, matchKeyCombo} from "../../state/shortcuts.ts";
 import IosSpinner from "../../assets/svg/ios-spinner.svg?react"
 import {modelInUse} from "../../data-structure/client-option.tsx";
 import {PopOverDot} from "./compnent/dot.tsx";
+import {FaCheckCircle} from "react-icons/fa";
 
 type Props = {
     chatProxy: Chat
@@ -171,7 +172,6 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
         }
     }, [inputAreaIsLarge])
 
-
     return (<div className="flex flex-col items-center w-full mt-auto bottom-0 max-w-4xl">
             <div className="relative flex items-center justify-center w-full z-10">
                 <div className="absolute left-2 flex items-center gap-1.5">
@@ -191,7 +191,8 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
                     <PopOverDot text="MD" popOverText="Display messages in markdown style" activated={showMarkdown}
                                 action={() => appState.pref.showMarkdown = !appState.pref.showMarkdown}/>
 
-                    {currentModel && <PopOverDot text={currentModel} fixedRound={false} popOverText="Lanuage model in use"/>}
+                    {currentModel &&
+                        <PopOverDot text={currentModel} fixedRound={false} popOverText="Lanuage model in use"/>}
                     <TextPendingIcon/>
                 </div>
                 <button
@@ -243,15 +244,15 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
 
 const TextPendingIcon = () => {
 
-    const {isTextPending} = useSnapshot(controlState)
+    const {textPendingState} = useSnapshot(controlState)
 
     return (
-        <div className={cx("flex rounded-full w-5 h-5 items-center",
-            "select-none transform duration-200 ",
-            isTextPending ? "opacity-100" : "opacity-0")}>
-            <IosSpinner className={"stroke-white"}/>
+        <div className={cx("flex rounded-full w-4 h-4 items-center",
+            "select-none transition duration-200",
+            textPendingState == "none" ? "opacity-0" : "opacity-100")}>
+            {textPendingState == "pending" && <IosSpinner className={"stroke-white"}/>}
+            {textPendingState == "done" && <FaCheckCircle className={"fill-white"}/>}
         </div>
-
     )
 }
 
