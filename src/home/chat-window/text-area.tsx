@@ -6,6 +6,8 @@ import {cx} from "../../util/util.tsx"
 import {searchLinuxTerminalHistoryPotision} from "../../data-structure/message.tsx";
 import {bestModel, matchKeyCombo} from "../../state/shortcuts.ts";
 import IosSpinner from "../../assets/svg/ios-spinner.svg?react"
+import {modelInUse} from "../../data-structure/client-option.tsx";
+import {PopOverDot} from "./compnent/dot.tsx";
 
 type Props = {
     chatProxy: Chat
@@ -29,6 +31,7 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
     const [isComposing, setIsComposing] = useState(false)
     const [linuxTerminalHistoryIndex, setLinuxTerminalHistoryIndex] = useState(-1)
 
+    const currentModel = modelInUse(option.llm)
     const stopSpacePropagation = useCallback((event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === ' ') {
             event.stopPropagation()
@@ -170,29 +173,25 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
 
 
     return (<div className="flex flex-col items-center w-full mt-auto bottom-0 max-w-4xl">
-            <div className="relative flex items-center justify-center w-full">
+            <div className="relative flex items-center justify-center w-full z-10">
                 <div className="absolute left-2 flex items-center gap-1.5">
-                    <p className={cx("flex text-sm rounded-full w-5 h-5 items-center cursor-pointer",
-                        "justify-center select-none",
-                        option.llm.maxAttached > 0 ? "bg-blue-600/[0.8] text-neutral-100" : "text-violet-100 bg-white bg-opacity-20"
-                    )}
-                       onClick={() => {
-                           if (chatProxy.option.llm.maxAttached > 0) {
-                               chatProxy.option.llm.maxAttached = 0
-                           } else {
-                               chatProxy.option.llm.maxAttached = 2
-                           }
-                       }
-                       }
-                    >
-                        {option.llm.maxAttached === Number.MAX_SAFE_INTEGER ? '∞' : option.llm.maxAttached}
-                    </p>
-                    <p className={cx("flex text-[11px] rounded-full w-5 h-5 items-center",
-                        " cursor-pointer justify-center select-none",
-                        showMarkdown ? "bg-blue-600/[0.8] text-neutral-100" : "text-violet-100 bg-white bg-opacity-20"
-                    )}
-                       onClick={() => appState.pref.showMarkdown = !appState.pref.showMarkdown}
-                    >MD </p>
+                    <PopOverDot
+                        text={option.llm.maxAttached === Number.MAX_SAFE_INTEGER ? '∞' : option.llm.maxAttached.toString()}
+                        popOverText="Number of attached messages"
+                        activated={option.llm.maxAttached > 0}
+                        action={() => {
+                            if (chatProxy.option.llm.maxAttached > 0) {
+                                chatProxy.option.llm.maxAttached = 0
+                            } else {
+                                chatProxy.option.llm.maxAttached = 2
+                            }
+                        }}
+                    />
+
+                    <PopOverDot text="MD" popOverText="Display messages in markdown style" activated={showMarkdown}
+                                action={() => appState.pref.showMarkdown = !appState.pref.showMarkdown}/>
+
+                    {currentModel && <PopOverDot text={currentModel} fixedRound={false} popOverText="Lanuage model in use"/>}
                     <TextPendingIcon/>
                 </div>
                 <button
