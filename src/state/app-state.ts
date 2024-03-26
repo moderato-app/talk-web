@@ -39,6 +39,7 @@ export type UserPreference = {
     dismissDemo: boolean,
     showRecorder: boolean,
     showMarkdown: boolean,
+    showSidebar: boolean,
     shortcuts: Shortcuts,
 }
 
@@ -80,6 +81,7 @@ export const appState = proxy<AppState>({
         dismissDemo: false,
         showRecorder: true,
         showMarkdown: true,
+        showSidebar: true,
         shortcuts: defaultShortcuts()
     }
 })
@@ -103,6 +105,7 @@ export const defaultAppState = (): AppState => ({
         dismissDemo: false,
         showRecorder: true,
         showMarkdown: true,
+        showSidebar: true,
         shortcuts: defaultShortcuts()
     }
 })

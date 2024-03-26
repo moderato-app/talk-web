@@ -88,12 +88,20 @@ const steps: Step[] = [
             Object.keys(app.pref.shortcuts).forEach((field) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                const shortcut = dft[field] as KeyCombo|undefined
-                if (!shortcut){
+                const shortcut = dft[field] as KeyCombo | undefined
+                if (!shortcut) {
                     return Error(`${field} was not found in defaultShortcuts`)
                 }
                 app.pref.shortcuts[field as keyof Shortcuts].name = shortcut.name
             })
+            return null
+        }
+    },
+    {
+        fromVersion: "2.0.3",
+        toVersion: "2.1.0",
+        action: (app: AppState): Error | null => {
+            app.pref.showSidebar = true
             return null
         }
     }

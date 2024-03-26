@@ -61,7 +61,7 @@ export const MessageList: React.FC<MLProps> = ({chatProxy}) => {
     const items = virtualizer.getVirtualItems()
 
     const scrollToBottom = throttle((behavior?: 'instant' | 'smooth') => {
-        if (!layoutState.isPAPinning && !layoutState.isPAFloating && scrollEndRef.current) {
+        if (!layoutState.isPAPinning && scrollEndRef.current) {
             // don't scroll message list if UI of Preview is showing, in case UI of Preview is pushed outside screen.
             scrollEndRef.current.scrollIntoView({behavior: behavior ?? "instant"})
         }

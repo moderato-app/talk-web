@@ -85,7 +85,7 @@ const ChatList_ = () => {
                     onMouseDown={e => e.stopPropagation()}
                     onMouseUp={e => e.stopPropagation()}
                 >
-                    <PiPlusLight size={24}/>
+                    <PiPlusLight size={24} className="stroke-[3px]"/>
                 </div>
             </div>
             <div

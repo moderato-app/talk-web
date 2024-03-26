@@ -9,11 +9,13 @@ import {appState, hydrationState} from "../state/app-state.ts"
 import {useNavigate} from "react-router-dom"
 import {Helmet} from 'react-helmet-async'
 import {TheWallpaper} from "../wallpaper/wallpaper.tsx"
+import {cx} from "../util/util.tsx";
 
 
 export default function Home() {
     const {hydrated} = useSnapshot(hydrationState)
     const {auth} = useSnapshot(appState)
+    const {showSidebar} = useSnapshot(appState.pref)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -33,7 +35,9 @@ export default function Home() {
                 <>
                     <div
                         className="flex h-screen w-screen items-center justify-center gap-2 overflow-hidden p-3 lg:gap-5">
-                        <div className="hidden sm:block h-full min-w-60 max-w-80 w-[35%]">
+                        <div className={cx("h-full min-w-60 max-w-80 w-[35%]",
+                            showSidebar ? "hidden sm:block" : "hidden"
+                        )}>
                             <Panel/>
                         </div>
                         <ChatWindow/>
