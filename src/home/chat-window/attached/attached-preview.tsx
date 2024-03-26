@@ -9,7 +9,6 @@ import {findPrompt, Prompt, promptState} from "../../../state/promt-state.ts";
 import {AttachedItem} from "./attached-item.tsx";
 import {cx} from "../../../util/util.tsx";
 import {PromptEditor} from "../prompt/prompt-editor.tsx";
-import {subscribe} from "valtio";
 import {CloseIcon} from "../compnent/widget/icon.tsx";
 
 type HPProps = {
@@ -71,15 +70,6 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isPAPinning]);
 
-    useEffect(() => {
-        const scroll = () => {
-            if (scrollRef.current) {
-                scrollRef.current.scrollTop += layoutState.PAButtonWheelDeltaY
-            }
-        }
-        scroll()
-        return subscribe(layoutState, scroll)
-    }, []);
     return (
         <div
             className={cx("flex flex-col w-full pb-2",
