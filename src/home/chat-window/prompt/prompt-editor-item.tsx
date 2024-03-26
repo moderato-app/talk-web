@@ -26,7 +26,7 @@ export const PromptEditorItem: React.FC<Props> = ({promptProxy, messageProxy, in
         e.preventDefault()
         const newIndex = e.shiftKey || e.altKey || e.ctrlKey || e.metaKey ? index : index + 1
         // eslint-disable-next-line valtio/state-snapshot-rule
-        promptProxy.messages.splice(newIndex, 0, {role: "user", content: ""})
+        promptProxy.messages.splice(newIndex, 0, {role: "system", content: ""})
     }, [index, promptProxy.messages]);
 
     return (

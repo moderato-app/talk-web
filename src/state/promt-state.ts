@@ -62,7 +62,7 @@ export const newPrompt = (): string => {
     const newP: Prompt = {
         id: randomHash16Char(),
         name: "New Prompt",
-        messages: [{role: "user", content: ""}],
+        messages: [{role: "system", content: ""}],
         preset: false
     }
     promptState.prompts.unshift(newP)

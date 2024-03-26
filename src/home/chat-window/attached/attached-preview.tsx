@@ -142,7 +142,7 @@ const PromptEditorTitle: React.FC<Props> = ({promptProxy}) => {
         <input name="prompt name"
                style={{width: `${name.length + 1}ch`}}
                className={cx("whitespace-nowrap outline-none bg-neutral-100/[0.5] rounded-xl",
-                   "text-neutral-800 text-lg m-auto pl-3")}
+                   "text-neutral-800 text-lg m-auto text-center")}
                value={name}
                onChange={e => promptProxy.name = e.target.value}
         />

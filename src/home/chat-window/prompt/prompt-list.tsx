@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react"
+import React, {useCallback, useEffect, useRef, useState} from "react"
 import {Chat} from "../../../state/app-state.ts"
 import {useSnapshot} from "valtio/react"
 import {newPrompt, Prompt, promptState} from "../../../state/promt-state.ts"
@@ -45,6 +45,15 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
         setFilteredPrompts(ps)
     }, [searchText, prompts, setFilteredPrompts])
 
+    const scrollToTop = useCallback(() => {
+        const ref = containerRef.current
+        ref?.scrollTo({
+            left: 0,
+            top: 0,
+            behavior: 'instant'
+        })
+    }, []);
+
     // scroll to selected item
     useEffect(() => {
         if (isPAPinning && !isSearching && containerRef.current) {
@@ -64,16 +73,8 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
                 }
             })
         }
-        return () => {
-            const ref = containerRef.current
-            ref?.scrollTo({
-                left: 0,
-                top: 0,
-                behavior: 'instant'
-            })
-
-        }
-    }, [isSearching, isPAPinning,selectedRef,containerRef])
+        return scrollToTop
+    }, [isSearching, isPAPinning, selectedRef, containerRef, scrollToTop])
 
     return (
         <div className="flex h-full flex-col gap-2 min-w-[18rem] max-w-[18rem] p4-2">
@@ -130,7 +131,10 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
                     <div
                         className="flex justify-center items-center rounded-xl stroke-white text-neutral-500
                  bg-white bg-opacity-80 backdrop-blur cursor-pointer "
-                        onClick={newPrompt}
+                        onClick={() => {
+                            newPrompt()
+                            scrollToTop()
+                        }}
                     >
                         <PiPlusLight size={24} className="stroke-2"/>
                     </div>

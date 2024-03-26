@@ -47,22 +47,22 @@ export const ChatWindow: React.FC = () => {
                     </div>
 
                     <div
-                        className="flex flex-col items-center w-full h-full justify-between pb-2">
-                        <>
-                            <div className={cx("flex justify-between w-full px-2 py-1 rounded-t-xl rounded-b-md",
-                                "cursor-pointer bg-neutral-200/[0.5]")}>
-                                <span className="icon-[f7--sidebar-left] w-5 h-5"
+                        className="flex flex-col items-center w-full h-full pb-2 justify-start">
+                        <div className={cx("flex justify-between w-full px-2 py-1 rounded-t-xl rounded-b-md",
+                            "bg-neutral-200/[0.5] select-none")}>
+                                <span className="icon-[f7--sidebar-left] w-5 h-5 cursor-pointer"
                                       onClick={() => appState.pref.showSidebar = !appState.pref.showSidebar}
                                 ></span>
-                                <p>{chatProxy?.name}</p>
-                                <div
-                                    className="flex justify-center items-center bg-neutral-500 rounded-full w-5 h-5 cursor-pointer"
-                                    onClick={() => layoutState.isPAPinning = true}
-                                >
-                                    <p className="text-sm text-neutral-100">P</p>
-                                </div>
+                            <p>{chatProxy?.name}</p>
+                            <div
+                                className="flex justify-center items-center bg-neutral-500 rounded-full w-5 h-5 cursor-pointer"
+                                onClick={() => layoutState.isPAPinning = true}
+                            >
+                                <p className="text-sm text-neutral-100">P</p>
                             </div>
-                            <MessageList chatProxy={chatProxy} key={chatProxy.id}/>
+                        </div>
+                        <MessageList chatProxy={chatProxy} key={chatProxy.id}/>
+                        <div className="w-full mt-auto">
                             <div
                                 className="bottom-0 flex w-full flex-col items-center gap-2 rounded-xl px-2
                                 md:px-4 lg:px-6 pt-1">
@@ -75,7 +75,7 @@ export const ChatWindow: React.FC = () => {
                                         : <div className="h-2"></div>
                                 }
                             </div>
-                        </>
+                        </div>
                     </div>
                 </>
             }
