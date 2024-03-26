@@ -1,7 +1,7 @@
 {
   "name": "talk-vite",
   "private": true,
-  "version": "2.0.5",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -50,6 +50,8 @@
     "wavesurfer.js": "^7.3.0"
   },
   "devDependencies": {
+    "@iconify/json": "^2.2.196",
+    "@iconify/tailwind": "^0.1.4",
     "@tailwindcss/typography": "^0.5.9",
     "@types/crypto-js": "^4.1.1",
     "@types/gradient-string": "^1.1.2",

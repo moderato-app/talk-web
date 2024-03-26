@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import defaultTheme from 'tailwindcss/defaultTheme'
 import typography from '@tailwindcss/typography';
+import {addDynamicIconSelectors} from '@iconify/tailwind'
 
 export default {
     mode: 'jit', // https://v2.tailwindcss.com/docs/just-in-time-mode
@@ -93,7 +94,8 @@ export default {
 
     },
     plugins: [
-        typography
+        typography,
+        addDynamicIconSelectors(),
     ],
 
 }

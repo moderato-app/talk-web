@@ -26,7 +26,7 @@ export const PromptEditor: React.FC<Props> = ({promptProxy}) => {
                 )
                 :
                 <PiPlusLight onClick={add}
-                             className={cx("m-auto h-5 w-5 rounded-xl stroke-white text-neutral-500",
+                             className={cx("m-auto h-5 w-5 stroke-2 rounded-xl stroke-white text-neutral-500",
                                  "bg-white bg-opacity-80 backdrop-blur cursor-pointer")}/>
             }
         </div>

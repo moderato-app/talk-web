@@ -9,8 +9,8 @@ import {findPrompt, Prompt, promptState} from "../../../state/promt-state.ts";
 import {AttachedItem} from "./attached-item.tsx";
 import {cx} from "../../../util/util.tsx";
 import {PromptEditor} from "../prompt/prompt-editor.tsx";
-import {CloseIcon} from "../compnent/widget/icon.tsx";
 import {subscribe} from "valtio";
+import {CloseIcon} from "../compnent/widget/icon.tsx";
 
 type HPProps = {
     chatProxy: Chat
@@ -18,7 +18,7 @@ type HPProps = {
 
 export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
     // console.info("AttachedPreview rendered", new Date().toLocaleString())
-    const {isPAFloating, isPAPinning} = useSnapshot(layoutState)
+    const {isPAPinning} = useSnapshot(layoutState)
     const [hist, setHist] = useState<LLMMessage[]>([])
     const [promptProxy, setPromptProxy] = useState<Prompt | undefined>()
     const [inputText, setInputText] = useState("")
@@ -26,7 +26,7 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
 
     useEffect(() => {
         const updateMessages = () => {
-            if (isPAFloating || isPAPinning) {
+            if (isPAPinning) {
                 const h = attachedMessages(chatProxy.messages, chatProxy.option.llm.maxAttached)
                 setHist(h)
             }
@@ -36,7 +36,7 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
         const un2 = subscribeKey(chatProxy, "messages", updateMessages)
 
         const updatePrompt = () => {
-            if (isPAFloating || isPAPinning) {
+            if (isPAPinning) {
                 if (chatProxy.promptId !== "") {
                     const p = findPrompt(chatProxy.promptId)
                     setPromptProxy(p)
@@ -54,7 +54,7 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
         const un31 = subscribeKey(promptState, "prompts", updatePrompt)
 
         const updateInputText = () => {
-            if (isPAFloating || isPAPinning) {
+            if (isPAPinning) {
                 setInputText(chatProxy.inputText)
             }
         }
@@ -69,7 +69,7 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
             un4()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isPAFloating, isPAPinning]);
+    }, [isPAPinning]);
 
     useEffect(() => {
         const scroll = () => {
@@ -85,48 +85,55 @@ export const AttachedPreview: React.FC<HPProps> = ({chatProxy}) => {
             className={cx("flex flex-col w-full pb-2",
                 "bg-opacity-40 backdrop-blur bg-neutral-200 rounded-lg"
             )}>
-            <div className="flex items-center justify-between gap-2">
-                <div className="select-none text-xl text-neutral-600 ml-2.5">Attached Messages Preview</div>
+            <div className="flex items-center justify-end p-2 pt-1">
                 <div
                     onClick={() => layoutState.isPAPinning = false}
-                    className={cx("rounded-full mr-1 text-neutral-500 p-0.5 bg-neutral-100/[0.3]",
-                        "hover:bg-neutral-500/[0.4] hover:text-neutral-100 transition duration-300 cursor-pointer",
-                        isPAPinning ? "" : "opacity-0"
+                    className={cx("rounded-full text-neutral-500 p-0.5 bg-neutral-500 cursor-pointer",
                     )}>
-                    <CloseIcon className="h-5 w-5"/>
+                    <CloseIcon className="h-4 w-4 stroke-[2px] stroke-neutral-100"/>
                 </div>
             </div>
             <div
                 ref={scrollRef}
-                style={{ scrollbarGutter: "stable" }}
-                className={cx("flex flex-col gap-3 pt-1 overflow-y-auto overflow-x-hidden",
+                style={{scrollbarGutter: "stable"}}
+                className={cx("flex flex-col gap-5 overflow-y-auto overflow-x-hidden",
                     "scrollbar-hidden hover:scrollbar-visible-neutral-300"
                 )}>
-                <div
-                    className="flex flex-col px-1 ml-1.5 mr-0.5 pb-3 border-2 border-dashed border-neutral-500 rounded-lg ">
-                    {promptProxy ?
-                        <>
-                            <PromptEditorTitle promptProxy={promptProxy}/>
-                            <PromptEditor chatProxy={chatProxy} promptProxy={promptProxy}/>
-                        </>
-                        :
-                        <EmptyPromptEditorTitle/>
-                    }
+                <div className="flex flex-col gap-0.5">
+                    <p className="px-1 ml-1.5 text-neutral-500 font-bold mr-auto">Prompt</p>
+                    <div
+                        className="flex flex-col px-1 ml-1.5 mr-0.5 pb-3 py-1 border-2 border-dashed border-neutral-500 rounded-lg gap-1">
+                        {promptProxy ?
+                            <>
+                                <PromptEditorTitle promptProxy={promptProxy}/>
+                                <PromptEditor chatProxy={chatProxy} promptProxy={promptProxy}/>
+                            </>
+                            :
+                            <EmptyPromptEditorTitle/>
+                        }
+                    </div>
                 </div>
-                <div className="flex flex-col gap-1 px-1.5 pb-3">
-                    {
-                        hist.map((h, index) => (
-                                <div key={index}>
-                                    <AttachedItem message={h}/>
-                                </div>
+                <div className="flex flex-col gap-0.5">
+                    <div className="flex justify-between items-center px-1 ml-1.5">
+                        <p className="text-neutral-500 font-bold mr-auto">Messages Preview</p>
+                        <p className="text-neutral-500 text-xs "> messages below will be sent to the LLM server</p>
+                    </div>
+                    <div
+                        className="flex flex-col gap-2 px-1 py-2 ml-1.5 mr-0.5 pb-2 border-2 border-dashed border-neutral-500 rounded-lg">
+                        {
+                            hist.map((h, index) => (
+                                    <div key={index}>
+                                        <AttachedItem message={h}/>
+                                    </div>
+                                )
                             )
-                        )
-                    }
-                    {inputText &&
-                        <div>
-                            <AttachedItem message={{role: "user", content: inputText}}/>
-                        </div>
-                    }
+                        }
+                        {inputText &&
+                            <div>
+                                <AttachedItem message={{role: "user", content: inputText}}/>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,23 +149,20 @@ const PromptEditorTitle: React.FC<Props> = ({promptProxy}) => {
     const {name} = useSnapshot(promptProxy, {sync: true})
 
     return (
-        <div className="flex items-center text-lg gap-1">
-            <div className="text-neutral-600 select-none">Prompt:</div>
-            <input name="prompt name"
-                   style={{width: `${name.length + 1}ch`}}
-                   className="whitespace-nowrap outline-none bg-transparent text-neutral-800"
-                   value={name}
-                   onChange={e => promptProxy.name = e.target.value}
-            />
-        </div>
+        <input name="prompt name"
+               style={{width: `${name.length + 1}ch`}}
+               className={cx("whitespace-nowrap outline-none bg-neutral-100/[0.5] rounded-xl",
+                   "text-neutral-800 text-lg m-auto pl-3")}
+               value={name}
+               onChange={e => promptProxy.name = e.target.value}
+        />
     )
 }
 
 const EmptyPromptEditorTitle = () => {
     return (
         <div className="flex items-center text-lg gap-1 text-neutral-600">
-            <div className="select-none">Prompt:</div>
-            <div className="bg-transparent line-through select-none">None</div>
+            <div className="select-none">Please select a prompt or create a new one</div>
         </div>
     )
 }

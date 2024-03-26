@@ -54,9 +54,9 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
                     const selectedRect = selectedRef.current.getBoundingClientRect()
 
                     const relativeTopPosition = selectedRect.top - containerRect.top
-                    const scrollToPosition = relativeTopPosition - containerRect.height / 2 + selectedRect.height / 2
+                    const scrollToPosition = relativeTopPosition - containerRect.height / 2
 
-                    containerRef.current.scrollBy({
+                    containerRef.current.scrollTo({
                         left: 0,
                         top: scrollToPosition,
                         behavior: 'smooth'
@@ -64,7 +64,16 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
                 }
             })
         }
-    }, [isSearching, isPAPinning])
+        return () => {
+            const ref = containerRef.current
+            ref?.scrollTo({
+                left: 0,
+                top: 0,
+                behavior: 'instant'
+            })
+
+        }
+    }, [isSearching, isPAPinning,selectedRef,containerRef])
 
     return (
         <div className="flex h-full flex-col gap-2 min-w-[18rem] max-w-[18rem] p4-2">
@@ -120,13 +129,12 @@ export const PromptList: React.FC<Props> = ({chatProxy}) => {
                 {!isSearching &&
                     <div
                         className="flex justify-center items-center rounded-xl stroke-white text-neutral-500
-                 bg-neutral-100/[0.4] backdrop-blur cursor-pointer w-6 h-6"
+                 bg-white bg-opacity-80 backdrop-blur cursor-pointer "
                         onClick={newPrompt}
                     >
-                        <PiPlusLight size={24}/>
+                        <PiPlusLight size={24} className="stroke-2"/>
                     </div>
                 }
-
             </div>
             <div
                 ref={containerRef}

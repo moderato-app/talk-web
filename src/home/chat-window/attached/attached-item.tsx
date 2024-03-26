@@ -13,10 +13,10 @@ type Props = {
 export const AttachedItem: React.FC<Props> = ({message}) => {
 
     const [fullText, setFullText] = useState(false)
-    const {isPAPinning, isPAFloating} = useSnapshot(layoutState)
+    const {isPAPinning} = useSnapshot(layoutState)
     useEffect(() => {
         setFullText(false)
-    }, [isPAPinning, isPAFloating]);
+    }, [isPAPinning]);
     let theme
     switch (message.role) {
         case "user":
@@ -33,7 +33,6 @@ export const AttachedItem: React.FC<Props> = ({message}) => {
     return (
         <div className="flex flex-col">
             <div
-                onMouseOver={() => setFullText(true)}
                 className={cx("flex rounded-xl whitespace-pre-wrap px-3 pt-0.5 pb-0.5",
                     theme.bg, theme.text, theme.other
                 )}>
@@ -44,7 +43,11 @@ export const AttachedItem: React.FC<Props> = ({message}) => {
                 {!fullText &&
                     <div className="leading-snug">
                         {message.content.slice(0, 100)}
-                        {message.content.length > 100 && <LiaEllipsisHSolid className="w-5 h-5"/>}
+                        {message.content.length > 100 &&
+                            <LiaEllipsisHSolid className="w-5 h-5 cursor-pointer stroke-2 text-neutral-600"
+                                               onClick={
+                                                   () => setFullText(true)
+                                               }/>}
                     </div>}
             </div>
         </div>
@@ -55,13 +58,13 @@ export const AttachedItem: React.FC<Props> = ({message}) => {
 const userTheme = {
     bg: userColor.bg,
     text: userColor.text,
-    other: "max-w-[80%] self-end",
+    other: "max-w-[85%] self-end",
 }
 
 const assistantTheme = {
     bg: assistantColor.bg,
     text: assistantColor.text,
-    other: "max-w-[80%] self-start",
+    other: "max-w-[85%] self-start",
 }
 
 const systemTheme = {
