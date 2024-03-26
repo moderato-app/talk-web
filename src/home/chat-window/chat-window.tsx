@@ -1,21 +1,19 @@
 import {appState, Chat, currentChatProxy} from "../../state/app-state.ts"
 import TextArea from "./text-area.tsx"
 import Recorder from "./recorder.tsx"
-import React, {useEffect, useRef, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {subscribeKey} from "valtio/utils"
 import {MessageList} from "./message-list/message-list.tsx"
 import {PromptAttached} from "./prompt-attached.tsx"
 import {cx} from "../../util/util.tsx"
 import {useSnapshot} from "valtio/react"
 import {layoutState} from "../../state/layout-state.ts"
-import {throttle} from "lodash"
 
 
 export const ChatWindow: React.FC = () => {
 
     const [chatProxy, setChatProxy] = useState<Chat | undefined>(undefined)
     // console.info("ChatWindow rendered", new Date().toLocaleString())
-    const buttonRef = useRef<HTMLDivElement>(null)
 
     const {isPAPinning} = useSnapshot(layoutState)
     const {showRecorder} = useSnapshot(appState.pref)
@@ -31,17 +29,8 @@ export const ChatWindow: React.FC = () => {
     }, [])
 
 
-    const handleMouseMove = throttle((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (buttonRef.current) {
-            const rect = buttonRef.current.getBoundingClientRect()
-            const [x, y] = [(rect.left + 18), (rect.top + 18)]
-            layoutState.PAButtonDistance = Math.hypot(x - event.clientX, y - event.clientY)
-        }
-    }, 50)
-
     return (
         <div
-            onMouseMove={handleMouseMove}
             className={cx("relative flex flex-col max-w-4xl rounded-xl w-full h-full items-center",
                 "transition-all duration-200",
                 isPAPinning ? "bg-opacity-0" : "bg-opacity-40 backdrop-blur bg-neutral-200"
@@ -60,8 +49,8 @@ export const ChatWindow: React.FC = () => {
                     <div
                         className="flex flex-col items-center w-full h-full justify-between pb-2">
                         <>
-                            <div ref={buttonRef}
-                                 className="flex justify-between w-full px-2 py-1 backdrop-blur cursor-pointer">
+                            <div className={cx("flex justify-between w-full px-2 py-1 rounded-t-xl rounded-b-md",
+                                "cursor-pointer bg-neutral-200/[0.5]")}>
                                 <span className="icon-[f7--sidebar-left] w-5 h-5"
                                       onClick={() => appState.pref.showSidebar = !appState.pref.showSidebar}
                                 ></span>
