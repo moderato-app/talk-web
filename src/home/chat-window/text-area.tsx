@@ -172,6 +172,10 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
         }
     }, [inputAreaIsLarge])
 
+    useEffect(() => {
+        textAreaRef.current?.focus()
+    }, [])
+
     return (<div className="flex flex-col items-center w-full mt-auto bottom-0 max-w-4xl">
             <div className="relative flex items-center justify-center w-full z-10">
                 <div className="absolute left-2 flex items-center gap-1.5">
