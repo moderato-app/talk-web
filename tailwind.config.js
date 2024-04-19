@@ -3,11 +3,14 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import typography from '@tailwindcss/typography';
 import {addDynamicIconSelectors} from '@iconify/tailwind'
 
+const {nextui} = require("@nextui-org/react");
+
 export default {
     mode: 'jit', // https://v2.tailwindcss.com/docs/just-in-time-mode
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
+        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
         extend: {
@@ -93,9 +96,11 @@ export default {
         },
 
     },
+    darkMode: "class",
     plugins: [
         typography,
         addDynamicIconSelectors(),
+        nextui(),
     ],
 
 }
