@@ -3,11 +3,11 @@ import {useSnapshot} from "valtio/react"
 import {appState, Chat} from "../../state/app-state.ts"
 import {controlState, SendMessageOption} from "../../state/control-state.ts"
 import {cx} from "../../util/util.tsx"
-import {searchLinuxTerminalHistoryPotision} from "../../data-structure/message.tsx";
+import {searchLinuxTerminalHistoryPosition} from "../../data-structure/message.tsx";
 import {bestModel, matchKeyCombo} from "../../state/shortcuts.ts";
 import IosSpinner from "../../assets/svg/ios-spinner.svg?react"
 import {modelInUse} from "../../data-structure/client-option.tsx";
-import {PopOverDot} from "./compnent/dot.tsx";
+import ModelSelection, {PopOverDot} from "./compnent/dot.tsx";
 import {FaCheckCircle} from "react-icons/fa";
 
 type Props = {
@@ -82,7 +82,7 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
 
         // search history or reset history
         if (event.key === 'ArrowUp' || (event.key === "p" && event.ctrlKey)) {
-            const [res, newIndex] = searchLinuxTerminalHistoryPotision(chatProxy.messages,
+            const [res, newIndex] = searchLinuxTerminalHistoryPosition(chatProxy.messages,
                 linuxTerminalHistoryIndex,
                 chatProxy.inputText,
                 "up")
@@ -92,7 +92,7 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
             setLinuxTerminalHistoryIndex(newIndex)
             return
         } else if (event.key === 'ArrowDown' || (event.key === "n" && event.ctrlKey)) {
-            const [res, newIndex] = searchLinuxTerminalHistoryPotision(chatProxy.messages,
+            const [res, newIndex] = searchLinuxTerminalHistoryPosition(chatProxy.messages,
                 linuxTerminalHistoryIndex,
                 chatProxy.inputText,
                 "down")
@@ -195,8 +195,8 @@ const TextArea: React.FC<Props> = ({chatProxy}) => {
                     <PopOverDot text="MD" popOverText="Display messages in markdown style" activated={showMarkdown}
                                 action={() => appState.pref.showMarkdown = !appState.pref.showMarkdown}/>
 
-                    {currentModel &&
-                        <PopOverDot text={currentModel} fixedRound={false} popOverText="Lanuage model in use"/>}
+                    {currentModel && <ModelSelection chatProxy={chatProxy}/>}
+
                     <TextPendingIcon/>
                 </div>
                 <button

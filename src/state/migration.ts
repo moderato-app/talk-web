@@ -12,6 +12,22 @@ type Step = {
     action: (app: AppState) => Error | null
 }
 
+function resetShortcutDescription() {
+    return (app: AppState): Error | null => {
+        const dft = defaultShortcuts()
+        Object.keys(app.pref.shortcuts).forEach((field) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const shortcut = dft[field] as KeyCombo | undefined
+            if (!shortcut) {
+                return Error(`${field} was not found in defaultShortcuts`)
+            }
+            app.pref.shortcuts[field as keyof Shortcuts].name = shortcut.name
+        })
+        return null
+    };
+}
+
 const steps: Step[] = [
     {
         fromVersion: "0.0.0",
@@ -83,19 +99,7 @@ const steps: Step[] = [
     {
         fromVersion: "2.0.0",
         toVersion: "2.0.3",
-        action: (app: AppState): Error | null => {
-            const dft = defaultShortcuts()
-            Object.keys(app.pref.shortcuts).forEach((field) => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                const shortcut = dft[field] as KeyCombo | undefined
-                if (!shortcut) {
-                    return Error(`${field} was not found in defaultShortcuts`)
-                }
-                app.pref.shortcuts[field as keyof Shortcuts].name = shortcut.name
-            })
-            return null
-        }
+        action: resetShortcutDescription()
     },
     {
         fromVersion: "2.0.3",
@@ -104,7 +108,13 @@ const steps: Step[] = [
             app.pref.showSidebar = true
             return null
         }
-    }
+    },
+    {
+        fromVersion: "2.1.0",
+        toVersion: "2.1.4",
+        action: resetShortcutDescription()
+    },
+
 ]
 
 export const migrateAppState = (app: AppState): Error | null => {

@@ -30,6 +30,7 @@ import {useSnapshot} from "valtio/react";
 import {appState} from "../../../state/app-state.ts";
 import {controlState} from "../../../state/control-state.ts";
 import {debounce, throttle} from "lodash";
+import {Popover, PopoverContent, PopoverTrigger} from "@nextui-org/react";
 
 hljs.configure({
     ignoreUnescapedHTML: true,
@@ -144,7 +145,46 @@ export const MyText: React.FC<TextProps> = ({messageSnap, theme}) => {
                     <p className="text-xs inline">{messageSnap.errorMessage}</p>
                 </div>
             }
+            {messageSnap.context &&
+                <Popover color={"foreground"} backdrop="blur">
+                    <PopoverTrigger>
+                        <span className="icon-[octicon--info-24] pointer-events-auto cursor-pointer"/>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        <InfoTooltip messageSnap={messageSnap}/>
+                    </PopoverContent>
+                </Popover>
+            }
         </div>
+    </div>
+}
+
+interface InfoTooltipProps {
+    messageSnap: Message
+}
+
+const InfoTooltip: React.FC<InfoTooltipProps> = ({messageSnap}) => {
+    const gemini = messageSnap.context?.talkOption.llmOption?.gemini;
+    const gpt = messageSnap.context?.talkOption.llmOption?.chatGPT;
+    const context = messageSnap.context;
+    return <div className="flex flex-col gap-2 px-1 py-2">
+        {gemini &&
+            <InfoTooltipKV k="Gemini Model" value={gemini.model}/>
+        }
+        {gpt &&
+            <InfoTooltipKV k="ChatGPT Model" value={gpt.model}/>
+        }
+        {context && <InfoTooltipKV k="Attached Messages" value={context.attachedMessageCount}/>}
+        {context && <InfoTooltipKV k="Prompt Messages" value={context.promptCount}/>}
+        <InfoTooltipKV k="Words" value={messageSnap.text.split(" ").length}/>
+        <InfoTooltipKV k="Chars" value={messageSnap.text.length}/>
+    </div>
+}
+
+const InfoTooltipKV: React.FC<{ k: string, value: number | string }> = ({k, value}) => {
+    return <div className="flex gap-2 justify-between">
+        <div className="font-thin">{k}</div>
+        <div className="">{value}</div>
     </div>
 }
 
