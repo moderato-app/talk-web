@@ -38,7 +38,7 @@ export type Message = {
     context?: Context
 }
 
-export const newThinking = (id: string, ticketId: string, role: Role): Message => ({
+export const newThinking = (id: string, ticketId: string, role: Role, ctx?: Context): Message => ({
     id: id,
     ticketId: ticketId,
     role: role,
@@ -46,9 +46,10 @@ export const newThinking = (id: string, ticketId: string, role: Role): Message =
     text: "",
     createdAt: Date.now(),
     lastUpdatedAt: Date.now(),
+    context: ctx
 })
 
-export const newError = (id: string, ticketId: string, role: Role, errorMessage: string): Message => ({
+export const newError = (id: string, ticketId: string, role: Role, errorMessage: string, ctx?: Context): Message => ({
     id: id,
     ticketId: ticketId,
     role: role,
@@ -57,6 +58,7 @@ export const newError = (id: string, ticketId: string, role: Role, errorMessage:
     errorMessage: errorMessage,
     createdAt: Date.now(),
     lastUpdatedAt: Date.now(),
+    context: ctx
 })
 
 export const newSending = (ctx: Context): Message => ({
@@ -243,7 +245,7 @@ export const isAttached = (m: Message): boolean => {
 // Return message of history and new index
 // If search can't continue, return -1 as new index
 // Range of currentIndex: [-1, messages.length - 1]
-export const searchLinuxTerminalHistoryPotision = (messages: Message[],
+export const searchLinuxTerminalHistoryPosition = (messages: Message[],
                                                    currentIndex: number,
                                                    currentBuffer: string,
                                                    keyUpOrDown: 'up' | 'down'

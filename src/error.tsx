@@ -57,7 +57,7 @@ export default function Error() {
                     }}
                 />
                 <CountDownButton
-                    text={"Clear All Chats"}
+                    text={"Only Clear All Chats"}
                     countDownMs={1000}
                     color="red"
                     icon={<BsTrash3 className="text-lg"/>}
@@ -67,7 +67,7 @@ export default function Error() {
                     }}
                 />
                 <CountDownButton
-                    text={"Clear Settings (Keep All Chats)"}
+                    text={"Only Clear Settings"}
                     countDownMs={1000}
                     color="red"
                     icon={<BsTrash3 className="text-lg"/>}

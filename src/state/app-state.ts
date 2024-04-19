@@ -184,6 +184,10 @@ export const findMessage2 = (chatId: string, messageId: string, warning?: boolea
     return
 }
 
+export const findUserMessageByTicketId = (chatProxy: Chat, ticketId: string) => {
+    return chatProxy.messages.find(m => m.ticketId === ticketId && m.role === "user")
+}
+
 export const dragChat = (draggingIndex: number, hoveringIndex: number) => {
     if (draggingIndex === hoveringIndex) {
         return

@@ -2,10 +2,8 @@ import React, {useEffect, useState} from "react"
 import {CopyToClipboard} from "react-copy-to-clipboard"
 import {MdOutlineContentCopy} from "react-icons/md"
 import {cx} from "../../../util/util.tsx"
-import {DropDownMenu} from "../compnent/drop-down-menu.tsx"
-import {BsTrash3} from "react-icons/bs"
 import {audioDb} from "../../../state/db.ts"
-import {PiDownloadSimpleLight} from "react-icons/pi"
+import {Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/react";
 
 type CopyProps = {
     text: string
@@ -33,24 +31,12 @@ export const Copy: React.FC<CopyProps> = ({text}) => {
 
 type TextMenuProps = {
     deleteAction: () => void
+    textToCopy: string,
+    audioId?: string
 }
 
-export const GeneralMenu: React.FC<TextMenuProps> = ({deleteAction}) => {
-    return <DropDownMenu list={[
-        {
-            name: "Delete",
-            action: deleteAction,
-            icon: <BsTrash3 className="text-red-600"/>
-        }
-    ]}/>
-}
+export const GeneralMenu: React.FC<TextMenuProps> = ({textToCopy, audioId, deleteAction}) => {
 
-type AudioMenuProps = {
-    deleteAction: () => void
-    audioId: string
-}
-
-export const AudioMenu: React.FC<AudioMenuProps> = ({deleteAction, audioId}) => {
     const [url, setUrl] = useState("")
 
     useEffect(() => {
@@ -73,18 +59,26 @@ export const AudioMenu: React.FC<AudioMenuProps> = ({deleteAction, audioId}) => 
         }, [audioId]
     )
 
-    return <DropDownMenu list={[
-        {
-            name: "Download",
-            download: {
-                url: url,
-                fileName: audioId
-            },
-            icon: <PiDownloadSimpleLight className="h-5 w-5"/>
-        }, {
-            name: "Delete",
-            action: deleteAction,
-            icon: <BsTrash3 className="text-red-600"/>
+    return <Dropdown className="bg-neutral-200">
+        <DropdownTrigger>
+            <span className="icon-[ph--dots-three-bold] h-8 w-8 p-1 text-violet-50 hover:text-violet-200"/>
+        </DropdownTrigger>
+        {audioId ?
+            <DropdownMenu aria-label="Static Actions">
+                <DropdownItem key="download" target="_blank" href={url} download={true}>
+                    Download
+                </DropdownItem>
+                <DropdownItem key="delete" className="text-danger" color="danger" onClick={deleteAction}>
+                    Delete
+                </DropdownItem>
+            </DropdownMenu>
+            :
+            <DropdownMenu aria-label="Static Actions">
+                <DropdownItem key="copy" onClick={() => navigator.clipboard.writeText(textToCopy)}>Copy</DropdownItem>
+                <DropdownItem key="delete" className="text-danger" color="danger" onClick={deleteAction}>
+                    Delete
+                </DropdownItem>
+            </DropdownMenu>
         }
-    ]}/>
+    </Dropdown>
 }

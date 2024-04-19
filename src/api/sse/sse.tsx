@@ -1,7 +1,7 @@
 import {useEffect} from 'react'
 import {useSnapshot} from "valtio/react"
 import {networkState} from "../../state/network-state.ts"
-import {appState, findChatProxy, findMessage, findMessage2} from "../../state/app-state.ts"
+import {appState, findChatProxy, findMessage, findMessage2, findUserMessageByTicketId} from "../../state/app-state.ts"
 import {ServerAbility} from "./server-ability.ts"
 import {newError, newThinking, onAudio, onEOF, onError, onThinking, onTyping} from "../../data-structure/message.tsx"
 import {
@@ -26,9 +26,6 @@ import {createDemoChatIfNecessary} from "../../data/chat.ts";
 
 export const SSE = () => {
     const {passwordHash} = useSnapshot(appState.auth)
-    // console.info("SSE rendered", new Date().toLocaleString())
-
-
     useEffect(() => {
             const ep = SSEEndpoint()
             const streamId = randomHash32Char()
@@ -70,7 +67,8 @@ export const SSE = () => {
                 if (msg) {
                     onThinking(msg)
                 } else {
-                    const message = newThinking(meta.messageID, meta.ticketId, meta.role)
+                    const found = findUserMessageByTicketId(chat, meta.ticketId);
+                    const message = newThinking(meta.messageID, meta.ticketId, meta.role, found?.context)
                     chat.messages.push(message)
                 }
             })
@@ -114,7 +112,7 @@ export const SSE = () => {
                 if (msg) {
                     onError(msg, error.errMsg)
                 } else {
-                    const m = newError(error.messageID, error.ticketId, error.role, error.errMsg)
+                    const m = newError(error.messageID, error.ticketId, error.role, error.errMsg, undefined)
                     chat.messages.push(m)
                 }
             })

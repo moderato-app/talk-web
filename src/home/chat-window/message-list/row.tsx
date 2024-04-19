@@ -1,14 +1,14 @@
 import {Message} from "../../../data-structure/message.tsx"
 import React, {useCallback, useEffect, useState} from "react"
 import {markMessageAsDeleted} from "../../../state/app-state.ts"
-import {userColor, assistantColor} from "../compnent/theme.ts"
+import {assistantColor, userColor} from "../compnent/theme.ts"
 import {cx} from "../../../util/util.tsx"
 import {MySpin} from "../compnent/widget/icon.tsx"
 import {Audio} from "../compnent/audio.tsx"
 import {MyText} from "../compnent/my-text.tsx"
 import {PiButterflyThin} from "react-icons/pi"
 import {MyError} from "../compnent/my-error.tsx"
-import {AudioMenu, Copy, GeneralMenu} from "./menu.tsx"
+import {Copy, GeneralMenu} from "./menu.tsx"
 import {useSnapshot} from "valtio/react";
 import {subscribeKey} from "valtio/utils";
 import {messageState} from "../../../state/message-state.ts";
@@ -54,12 +54,7 @@ export const Row: React.FC<Props> = ({
         >
             {messageSnap.role === "user" && messageSnap.status !== 'thinking' && hoveringOnRow &&
                 <div className="flex cursor-pointer select-none items-center gap-1 rounded px-2 text-neutral-200">
-                    {
-                        messageSnap.audio ?
-                        <AudioMenu deleteAction={markAsDeleted} audioId={messageSnap.audio.id}/>
-                            :
-                        <GeneralMenu deleteAction={markAsDeleted}/>
-                    }
+                    <GeneralMenu deleteAction={markAsDeleted} audioId={messageSnap.audio?.id} textToCopy={messageSnap.text}/>
                     {messageSnap.text && <Copy text={messageSnap.text}/>}
                 </div>
             }
@@ -94,12 +89,7 @@ export const Row: React.FC<Props> = ({
             {messageSnap.role === "assistant" && messageSnap.status !== 'thinking' && hoveringOnRow &&
                 <div className="flex cursor-pointer select-none items-center gap-1 rounded px-2 text-neutral-200">
                     {messageSnap.text && <Copy text={messageSnap.text}/>}
-                    {
-                        messageSnap.audio ?
-                        <AudioMenu deleteAction={markAsDeleted} audioId={messageSnap.audio.id}/>
-                            :
-                        <GeneralMenu deleteAction={markAsDeleted}/>
-                    }
+                    <GeneralMenu deleteAction={markAsDeleted} audioId={messageSnap.audio?.id} textToCopy={messageSnap.text}/>
                 </div>
             }
         </div>

@@ -43,7 +43,7 @@ export const defaultShortcuts = (): Shortcuts => ({
     }
 })
 
-export const bestModel = "gpt-4-turbo-preview"
+export const bestModel = "gpt-4"
 
 const mods: ModifierKey[] = ["Meta", "Control", "Alt", "Shift"]
 export const matchKeyCombo = (keyCombo: KeyCombo, e: React.KeyboardEvent<HTMLTextAreaElement>): boolean => {
